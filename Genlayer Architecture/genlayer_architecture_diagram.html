@@ -1,0 +1,300 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  .arch-wrap { font-family: 'Inter', sans-serif; padding: 1.5rem 0; max-width: 860px; margin: 0 auto; }
+  .arch-title { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 1.5rem; text-align: center; }
+
+  /* Layer system */
+  .layer { border-radius: 10px; border: 1.5px solid; margin-bottom: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s; }
+  .layer:hover { transform: translateX(4px); }
+
+  .layer-header { padding: 12px 16px; display: flex; align-items: center; gap: 10px; }
+  .layer-icon { font-size: 20px; }
+  .layer-info { flex: 1; }
+  .layer-name { font-size: 13px; font-weight: 600; }
+  .layer-sub { font-size: 11px; margin-top: 1px; }
+  .layer-badge { font-size: 10px; padding: 2px 8px; border-radius: 999px; font-weight: 500; border: 1px solid; }
+  .layer-toggle { font-size: 12px; color: var(--color-text-tertiary); transition: transform 0.2s; }
+  .layer.open .layer-toggle { transform: rotate(180deg); }
+
+  .layer-body { padding: 0 16px 14px; display: none; }
+  .layer.open .layer-body { display: block; }
+
+  /* Layer 1 - User/dApp */
+  .l-user { border-color: #C7D2FE; }
+  .l-user .layer-header { background: #EEF2FF; }
+  .l-user .layer-name { color: #4338CA; }
+  .l-user .layer-sub { color: #6366F1; }
+  .l-user .layer-badge { background: #E0E7FF; border-color: #A5B4FC; color: #3730A3; }
+
+  /* Layer 2 - GenLayer JS SDK */
+  .l-sdk { border-color: #A7F3D0; }
+  .l-sdk .layer-header { background: #ECFDF5; }
+  .l-sdk .layer-name { color: #065F46; }
+  .l-sdk .layer-sub { color: #059669; }
+  .l-sdk .layer-badge { background: #D1FAE5; border-color: #6EE7B7; color: #065F46; }
+
+  /* Layer 3 - GenLayer Node */
+  .l-node { border-color: #FED7AA; }
+  .l-node .layer-header { background: #FFF7ED; }
+  .l-node .layer-name { color: #9A3412; }
+  .l-node .layer-sub { color: #EA580C; }
+  .l-node .layer-badge { background: #FFEDD5; border-color: #FDC898; color: #9A3412; }
+
+  /* Layer 4 - Validators */
+  .l-val { border-color: #F5D0FE; }
+  .l-val .layer-header { background: #FDF4FF; }
+  .l-val .layer-name { color: #701A75; }
+  .l-val .layer-sub { color: #C026D3; }
+  .l-val .layer-badge { background: #FAE8FF; border-color: #E879F9; color: #701A75; }
+
+  /* Layer 5 - GenVM */
+  .l-vm { border-color: #FECACA; }
+  .l-vm .layer-header { background: #FEF2F2; }
+  .l-vm .layer-name { color: #991B1B; }
+  .l-vm .layer-sub { color: #DC2626; }
+  .l-vm .layer-badge { background: #FEE2E2; border-color: #FCA5A5; color: #991B1B; }
+
+  /* Layer 6 - External */
+  .l-ext { border-color: #BBF7D0; }
+  .l-ext .layer-header { background: #F0FDF4; }
+  .l-ext .layer-name { color: #14532D; }
+  .l-ext .layer-sub { color: #16A34A; }
+  .l-ext .layer-badge { background: #DCFCE7; border-color: #86EFAC; color: #14532D; }
+
+  /* Connector arrow */
+  .connector { display: flex; justify-content: center; align-items: center; gap: 6px; margin: -4px 0; position: relative; z-index: 1; padding: 2px 0; }
+  .conn-line { height: 2px; width: 40px; }
+  .conn-label { font-size: 9px; font-weight: 500; padding: 1px 6px; border-radius: 999px; border: 1px solid; white-space: nowrap; }
+
+  /* Inside layer body */
+  .body-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 4px; }
+  .body-item { background: var(--color-background-secondary); border: 1px solid var(--color-border-tertiary); border-radius: 6px; padding: 8px 10px; font-size: 11px; }
+  .body-item-title { font-weight: 600; color: var(--color-text-primary); margin-bottom: 3px; }
+  .body-item-desc { color: var(--color-text-secondary); line-height: 1.5; }
+
+  .val-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; margin-top: 4px; }
+  .val-card { border-radius: 6px; padding: 8px; text-align: center; border: 1px solid; }
+  .val-card-model { font-size: 10px; font-weight: 600; color: var(--color-text-primary); }
+  .val-card-prov { font-size: 9px; color: var(--color-text-tertiary); margin-top: 1px; }
+  .vc1 { background: #EEF2FF; border-color: #C7D2FE; }
+  .vc2 { background: #ECFDF5; border-color: #A7F3D0; }
+  .vc3 { background: #FFF7ED; border-color: #FED7AA; }
+  .vc4 { background: #FDF4FF; border-color: #F5D0FE; }
+
+  .ext-row { display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
+  .ext-chip { display: flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 6px; border: 1px solid; font-size: 11px; }
+  .ext-web { background: #EEF2FF; border-color: #C7D2FE; color: #4338CA; }
+  .ext-llm { background: #ECFDF5; border-color: #A7F3D0; color: #065F46; }
+  .ext-chain { background: #FFF7ED; border-color: #FED7AA; color: #9A3412; }
+
+  .code-block { background: var(--color-background-secondary); border: 1px solid var(--color-border-tertiary); border-radius: 6px; padding: 8px 12px; font-family: 'JetBrains Mono', monospace; font-size: 10px; margin-top: 8px; line-height: 1.7; color: var(--color-text-primary); }
+  .kw { color: #7C3AED; font-weight: 500; }
+  .fn { color: #0284C7; }
+  .str { color: #059669; }
+
+  .hint { text-align: center; font-size: 11px; color: var(--color-text-tertiary); margin-top: 1rem; font-style: italic; }
+</style>
+
+<div class="arch-wrap">
+  <div class="arch-title">GenLayer Architecture — How Everything Connects</div>
+
+  <!-- Layer 1 -->
+  <div class="layer l-user" onclick="toggleLayer(this)">
+    <div class="layer-header">
+      <div class="layer-icon">👤</div>
+      <div class="layer-info">
+        <div class="layer-name">User / dApp Frontend</div>
+        <div class="layer-sub">Web browser, mobile app, or server-side client</div>
+      </div>
+      <div class="layer-badge">Entry point</div>
+      <div class="layer-toggle">▼</div>
+    </div>
+    <div class="layer-body">
+      <div class="body-grid">
+        <div class="body-item">
+          <div class="body-item-title">Connect wallet</div>
+          <div class="body-item-desc">MetaMask or any EVM-compatible wallet signs transactions</div>
+        </div>
+        <div class="body-item">
+          <div class="body-item-title">Read state</div>
+          <div class="body-item-desc">Query contract storage via view methods — instant, no gas</div>
+        </div>
+        <div class="body-item">
+          <div class="body-item-title">Write transactions</div>
+          <div class="body-item-desc">Submit signed transactions that trigger contract execution</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector">
+    <div class="conn-line" style="background:#C7D2FE"></div>
+    <div class="conn-label" style="background:#EEF2FF;border-color:#C7D2FE;color:#4338CA">JSON-RPC calls</div>
+    <div class="conn-line" style="background:#C7D2FE"></div>
+  </div>
+
+  <!-- Layer 2 -->
+  <div class="layer l-sdk" onclick="toggleLayer(this)">
+    <div class="layer-header">
+      <div class="layer-icon">📦</div>
+      <div class="layer-info">
+        <div class="layer-name">GenLayerJS SDK / GenLayer CLI</div>
+        <div class="layer-sub">TypeScript SDK for frontends · CLI for deployment & management</div>
+      </div>
+      <div class="layer-badge">Developer tooling</div>
+      <div class="layer-toggle">▼</div>
+    </div>
+    <div class="layer-body">
+      <div class="code-block"><span class="kw">import</span> { createClient } <span class="kw">from</span> <span class="str">'genlayer-js'</span>
+
+<span class="kw">const</span> client = createClient({ chain: studionet })
+
+<span class="cm">// Read (instant)</span>
+<span class="kw">const</span> result = <span class="kw">await</span> client.<span class="fn">readContract</span>({ address, functionName: <span class="str">'get_data'</span>, args: [] })
+
+<span class="cm">// Write (goes through consensus)</span>
+<span class="kw">const</span> hash = <span class="kw">await</span> client.<span class="fn">writeContract</span>({ address, functionName: <span class="str">'update'</span>, args: [value] })
+<span class="kw">await</span> client.<span class="fn">waitForTransactionReceipt</span>({ hash, status: <span class="str">'FINALIZED'</span> })</div>
+    </div>
+  </div>
+
+  <div class="connector">
+    <div class="conn-line" style="background:#A7F3D0"></div>
+    <div class="conn-label" style="background:#ECFDF5;border-color:#A7F3D0;color:#065F46">HTTP / WebSocket</div>
+    <div class="conn-line" style="background:#A7F3D0"></div>
+  </div>
+
+  <!-- Layer 3 -->
+  <div class="layer l-node" onclick="toggleLayer(this)">
+    <div class="layer-header">
+      <div class="layer-icon">🖥️</div>
+      <div class="layer-info">
+        <div class="layer-name">GenLayer Node (JSON-RPC API)</div>
+        <div class="layer-sub">Receives transactions · coordinates validator selection · manages state</div>
+      </div>
+      <div class="layer-badge">Network layer</div>
+      <div class="layer-toggle">▼</div>
+    </div>
+    <div class="layer-body">
+      <div class="body-grid">
+        <div class="body-item">
+          <div class="body-item-title">gen_call</div>
+          <div class="body-item-desc">Read contract state without modifying it</div>
+        </div>
+        <div class="body-item">
+          <div class="body-item-title">eth_sendTransaction</div>
+          <div class="body-item-desc">Submit write transactions to the network</div>
+        </div>
+        <div class="body-item">
+          <div class="body-item-title">gen_getTransactionReceipt</div>
+          <div class="body-item-desc">Poll for transaction status: PENDING → ACCEPTED → FINALIZED</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector">
+    <div class="conn-line" style="background:#FED7AA"></div>
+    <div class="conn-label" style="background:#FFF7ED;border-color:#FED7AA;color:#9A3412">Validator selection (random)</div>
+    <div class="conn-line" style="background:#FED7AA"></div>
+  </div>
+
+  <!-- Layer 4 -->
+  <div class="layer l-val" onclick="toggleLayer(this)">
+    <div class="layer-header">
+      <div class="layer-icon">🔷</div>
+      <div class="layer-info">
+        <div class="layer-name">Validator Network</div>
+        <div class="layer-sub">Staked participants running diverse LLM models · apply equivalence principle</div>
+      </div>
+      <div class="layer-badge">Consensus layer</div>
+      <div class="layer-toggle">▼</div>
+    </div>
+    <div class="layer-body">
+      <div class="val-grid">
+        <div class="val-card vc1"><div class="val-card-model">GPT-5.2</div><div class="val-card-prov">openrouter</div></div>
+        <div class="val-card vc2"><div class="val-card-model">Claude 4.5</div><div class="val-card-prov">openrouter</div></div>
+        <div class="val-card vc3"><div class="val-card-model">Gemini 3</div><div class="val-card-prov">openrouter</div></div>
+        <div class="val-card vc4"><div class="val-card-model">DeepSeek V3</div><div class="val-card-prov">ionet</div></div>
+      </div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-top:10px;line-height:1.6">
+        One validator is randomly selected as the <strong>Leader</strong> — executes the contract and proposes output. Others apply the Equivalence Principle to agree or disagree. Majority consensus → transaction accepted.
+      </div>
+    </div>
+  </div>
+
+  <div class="connector">
+    <div class="conn-line" style="background:#F5D0FE"></div>
+    <div class="conn-label" style="background:#FDF4FF;border-color:#F5D0FE;color:#701A75">Contract execution</div>
+    <div class="conn-line" style="background:#F5D0FE"></div>
+  </div>
+
+  <!-- Layer 5 -->
+  <div class="layer l-vm" onclick="toggleLayer(this)">
+    <div class="layer-header">
+      <div class="layer-icon">⚙️</div>
+      <div class="layer-info">
+        <div class="layer-name">GenVM (Python Runtime)</div>
+        <div class="layer-sub">Executes Intelligent Contracts · sandboxed Python environment</div>
+      </div>
+      <div class="layer-badge">Execution layer</div>
+      <div class="layer-toggle">▼</div>
+    </div>
+    <div class="layer-body">
+      <div class="body-grid">
+        <div class="body-item">
+          <div class="body-item-title">Python contracts</div>
+          <div class="body-item-desc">Full Python with genlayer stdlib — familiar to millions of developers</div>
+        </div>
+        <div class="body-item">
+          <div class="body-item-title">Deterministic mode</div>
+          <div class="body-item-desc">Pure Python logic runs identically on all validators</div>
+        </div>
+        <div class="body-item">
+          <div class="body-item-title">Non-deterministic mode</div>
+          <div class="body-item-desc">gl.nondet.* calls are sandboxed — results go through eq. principle</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector">
+    <div class="conn-line" style="background:#BBF7D0"></div>
+    <div class="conn-label" style="background:#F0FDF4;border-color:#BBF7D0;color:#14532D">External calls</div>
+    <div class="conn-line" style="background:#BBF7D0"></div>
+  </div>
+
+  <!-- Layer 6 -->
+  <div class="layer l-ext" onclick="toggleLayer(this)">
+    <div class="layer-header">
+      <div class="layer-icon">🌐</div>
+      <div class="layer-info">
+        <div class="layer-name">External World</div>
+        <div class="layer-sub">The internet, AI models, and other blockchains — accessed trustlessly</div>
+      </div>
+      <div class="layer-badge">Data sources</div>
+      <div class="layer-toggle">▼</div>
+    </div>
+    <div class="layer-body">
+      <div class="ext-row">
+        <div class="ext-chip ext-web">🌐 Web data — gl.nondet.web.get(url)</div>
+        <div class="ext-chip ext-llm">🤖 LLM inference — gl.nondet.exec_prompt()</div>
+        <div class="ext-chip ext-chain">⛓ EVM contracts — gl.evm.contract_interface()</div>
+      </div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-top:10px;line-height:1.6">
+        Unlike traditional blockchains that need oracles, GenLayer contracts access these directly — no trusted intermediary required. The Equivalence Principle handles the non-determinism that comes from live data.
+      </div>
+    </div>
+  </div>
+
+  <div class="hint">Click each layer to expand · Scroll down to see the full stack</div>
+</div>
+
+<script>
+function toggleLayer(el) {
+  el.classList.toggle('open');
+}
+// Open first layer by default
+document.querySelector('.layer').classList.add('open');
+</script>
