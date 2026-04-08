@@ -1,0 +1,362 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  .od-wrap {
+    font-family: 'Inter', sans-serif;
+    padding: 1.5rem 0;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .od-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  /* Step flow */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .step-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .step-connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 48px;
+    flex-shrink: 0;
+  }
+
+  .step-dot {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    flex-shrink: 0;
+    transition: transform 0.2s;
+    cursor: pointer;
+    border: 2px solid;
+  }
+
+  .step-dot:hover { transform: scale(1.1); }
+
+  .step-line {
+    width: 2px;
+    flex: 1;
+    min-height: 16px;
+  }
+
+  .step-card {
+    flex: 1;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin: 0 0 12px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid;
+    position: relative;
+  }
+
+  .step-card:hover { transform: translateX(4px); }
+
+  .step-card-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .step-card-desc {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .step-card-detail {
+    font-size: 11px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid;
+    line-height: 1.6;
+    display: none;
+  }
+
+  .step-card.open .step-card-detail { display: block; }
+
+  /* Colors per step */
+  .s1 .step-dot { background: #EEF2FF; border-color: #818CF8; color: #4338CA; }
+  .s1 .step-line { background: #C7D2FE; }
+  .s1 .step-card { background: #EEF2FF; border-color: #C7D2FE; }
+  .s1 .step-card-title { color: #4338CA; }
+  .s1 .step-card-desc { color: #6366F1; }
+  .s1 .step-card-detail { color: #4338CA; border-color: #C7D2FE; }
+
+  .s2 .step-dot { background: #ECFDF5; border-color: #34D399; color: #065F46; }
+  .s2 .step-line { background: #A7F3D0; }
+  .s2 .step-card { background: #ECFDF5; border-color: #A7F3D0; }
+  .s2 .step-card-title { color: #065F46; }
+  .s2 .step-card-desc { color: #059669; }
+  .s2 .step-card-detail { color: #065F46; border-color: #A7F3D0; }
+
+  .s3 .step-dot { background: #FFF7ED; border-color: #FB923C; color: #9A3412; }
+  .s3 .step-line { background: #FED7AA; }
+  .s3 .step-card { background: #FFF7ED; border-color: #FED7AA; }
+  .s3 .step-card-title { color: #9A3412; }
+  .s3 .step-card-desc { color: #EA580C; }
+  .s3 .step-card-detail { color: #9A3412; border-color: #FED7AA; }
+
+  .s4 .step-dot { background: #FDF4FF; border-color: #E879F9; color: #701A75; }
+  .s4 .step-line { background: #F5D0FE; }
+  .s4 .step-card { background: #FDF4FF; border-color: #F5D0FE; }
+  .s4 .step-card-title { color: #701A75; }
+  .s4 .step-card-desc { color: #C026D3; }
+  .s4 .step-card-detail { color: #701A75; border-color: #F5D0FE; }
+
+  .s5 .step-dot { background: #FEF2F2; border-color: #F87171; color: #991B1B; }
+  .s5 .step-line { background: #FECACA; }
+  .s5 .step-card { background: #FEF2F2; border-color: #FECACA; }
+  .s5 .step-card-title { color: #991B1B; }
+  .s5 .step-card-desc { color: #DC2626; }
+  .s5 .step-card-detail { color: #991B1B; border-color: #FECACA; }
+
+  .s6 .step-dot { background: #F0FDF4; border-color: #4ADE80; color: #14532D; }
+  .s6 .step-card { background: #F0FDF4; border-color: #BBF7D0; }
+  .s6 .step-card-title { color: #14532D; }
+  .s6 .step-card-desc { color: #16A34A; }
+  .s6 .step-card-detail { color: #14532D; border-color: #BBF7D0; }
+
+  /* Validator viz */
+  .validator-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+
+  .validator-chip {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 500;
+    border: 1px solid;
+  }
+
+  .v-leader { background: #FEF9C3; border-color: #FDE047; color: #713F12; }
+  .v-agree { background: #DCFCE7; border-color: #86EFAC; color: #14532D; }
+  .v-vote { background: #E0E7FF; border-color: #A5B4FC; color: #3730A3; }
+
+  /* Appeal tree */
+  .appeal-tree {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .appeal-round {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+  }
+
+  .appeal-label {
+    font-weight: 600;
+    color: #991B1B;
+    width: 60px;
+    flex-shrink: 0;
+  }
+
+  .appeal-validators {
+    display: flex;
+    gap: 3px;
+  }
+
+  .av {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    font-weight: 600;
+  }
+
+  .av-orig { background: #DBEAFE; border-color: #93C5FD; color: #1D4ED8; }
+  .av-new { background: #FCE7F3; border-color: #F9A8D4; color: #9D174D; }
+
+  /* Hint */
+  .hint {
+    text-align: center;
+    font-size: 11px;
+    color: var(--color-text-tertiary);
+    margin-top: 1rem;
+    font-style: italic;
+  }
+
+  /* Outcome boxes */
+  .outcomes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .outcome-box {
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    border: 1px solid;
+  }
+
+  .outcome-accept { background: #F0FDF4; border-color: #BBF7D0; color: #14532D; }
+  .outcome-reject { background: #FFF7ED; border-color: #FED7AA; color: #9A3412; }
+</style>
+
+<div class="od-wrap">
+  <div class="od-title">How Optimistic Democracy Works — GenLayer Consensus Flow</div>
+
+  <div class="flow" id="flowContainer"></div>
+
+  <div class="hint">Click each step to expand details</div>
+</div>
+
+<script>
+const steps = [
+  {
+    cls: 's1',
+    icon: '📤',
+    title: 'Transaction submitted',
+    desc: 'A user submits a transaction to an Intelligent Contract on the GenLayer network.',
+    detail: `The transaction is queued in contract-specific order and marked as <strong>PENDING</strong>. GenLayer randomly selects a small group of validators from the active validator pool to process this transaction. One is designated as the <strong>Leader</strong>.`,
+    extra: () => `
+      <div class="validator-row">
+        <div class="validator-chip v-leader">👑 Leader (randomly selected)</div>
+        <div class="validator-chip v-vote">🔵 Validator 2</div>
+        <div class="validator-chip v-vote">🔵 Validator 3</div>
+        <div class="validator-chip v-vote">🔵 Validator 4</div>
+        <div class="validator-chip v-vote">🔵 Validator 5</div>
+      </div>`
+  },
+  {
+    cls: 's2',
+    icon: '⚙️',
+    title: 'Leader executes the contract',
+    desc: 'The Leader validator runs the Intelligent Contract — including any LLM calls or web fetches — and proposes an output.',
+    detail: `The Leader is the only one who actually <em>executes</em> the contract in full at this stage. This output becomes the proposed result for the transaction. Other validators will not re-execute — they will evaluate the Leader's proposal instead.`,
+    extra: null
+  },
+  {
+    cls: 's3',
+    icon: '⚖️',
+    title: 'Validators apply the equivalence principle',
+    desc: 'Other validators independently check whether the Leader\'s output is acceptable using the Equivalence Principle defined in the contract.',
+    detail: `Depending on the contract's design, validators either:<br>
+    <strong>• strict_eq</strong> — compare byte-for-byte<br>
+    <strong>• prompt_comparative</strong> — run their own LLM call to judge semantic similarity<br>
+    <strong>• prompt_non_comparative</strong> — evaluate the Leader's output against predefined criteria without re-running`,
+    extra: null
+  },
+  {
+    cls: 's2',
+    icon: '✅',
+    title: 'Majority consensus reached',
+    desc: 'If most validators accept the Leader\'s output, the transaction is provisionally accepted and enters the Finality Window.',
+    detail: `The transaction status moves to <strong>ACCEPTED</strong>. This is not final yet — there is a time window during which any participant can challenge the result by initiating an appeal.`,
+    extra: () => `
+      <div class="outcomes">
+        <div class="outcome-box outcome-accept">✓ Majority agrees → ACCEPTED (provisional)</div>
+        <div class="outcome-box outcome-reject">✗ No majority → transaction fails or retried</div>
+      </div>`
+  },
+  {
+    cls: 's5',
+    icon: '⚠️',
+    title: 'Appeal window (optional)',
+    desc: 'If anyone disagrees with the result, they can appeal during the Finality Window by posting a bond.',
+    detail: `The appeal round doubles the number of validators. A new group joins the originals. They first vote on whether to re-evaluate. If yes, a new Leader is chosen. Each escalation doubles validators again — this continues until consensus or all validators have participated.`,
+    extra: () => `
+      <div class="appeal-tree">
+        <div class="appeal-round">
+          <span class="appeal-label">Round 1</span>
+          <div class="appeal-validators">
+            ${[...Array(5)].map(() => '<div class="av av-orig">V</div>').join('')}
+          </div>
+          <span style="font-size:10px;color:#6B7280">5 validators</span>
+        </div>
+        <div class="appeal-round">
+          <span class="appeal-label">Appeal 1</span>
+          <div class="appeal-validators">
+            ${[...Array(5)].map(() => '<div class="av av-orig">V</div>').join('')}
+            ${[...Array(5)].map(() => '<div class="av av-new">N</div>').join('')}
+          </div>
+          <span style="font-size:10px;color:#6B7280">10 validators (doubled)</span>
+        </div>
+        <div class="appeal-round">
+          <span class="appeal-label">Appeal 2</span>
+          <div class="appeal-validators">
+            ${[...Array(10)].map(() => '<div class="av av-orig">V</div>').join('')}
+            ${[...Array(10)].map(() => '<div class="av av-new">N</div>').join('')}
+          </div>
+          <span style="font-size:10px;color:#6B7280">20 validators (doubled again)</span>
+        </div>
+      </div>
+      <div style="font-size:10px;color:#9A3412;margin-top:6px">🔑 Correct appellant → rewarded. Incorrect → loses bond (slashing).</div>`
+  },
+  {
+    cls: 's6',
+    icon: '🏁',
+    title: 'FINALIZED',
+    desc: 'After the Finality Window closes with no successful appeal, the transaction is permanently recorded on-chain.',
+    detail: `State is updated, the result is immutable. If an appeal was successful, the state reflects the corrected outcome. Validators who voted incorrectly are slashed (lose part of their stake).`,
+    extra: null
+  },
+];
+
+const container = document.getElementById('flowContainer');
+
+steps.forEach((s, i) => {
+  const isLast = i === steps.length - 1;
+  const row = document.createElement('div');
+  row.className = `step-row ${s.cls}`;
+  row.innerHTML = `
+    <div class="step-connector">
+      <div class="step-dot">${s.icon}</div>
+      ${!isLast ? '<div class="step-line"></div>' : ''}
+    </div>
+    <div class="step-card" id="card-${i}">
+      <div class="step-card-title">${s.title}</div>
+      <div class="step-card-desc">${s.desc}</div>
+      <div class="step-card-detail" id="detail-${i}">
+        ${s.detail}
+        ${s.extra ? s.extra() : ''}
+      </div>
+    </div>`;
+
+  container.appendChild(row);
+
+  document.getElementById(`card-${i}`).addEventListener('click', () => {
+    document.getElementById(`card-${i}`).classList.toggle('open');
+  });
+});
+</script>
